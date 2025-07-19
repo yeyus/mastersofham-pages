@@ -1,0 +1,22 @@
+{
+  "name": "mastersofham-pages",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "publish": "wrangler pages deploy src --project-name="
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yeyus/mastersofham-pages.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yeyus/mastersofham-pages/issues"
+  },
+  "homepage": "https://github.com/yeyus/mastersofham-pages#readme",
+  "devDependencies": {
+    "wrangler": "^4.25.0"
+  }
+}

@@ -25,7 +25,7 @@ class RotationTracker {
         this._rotateFactor = { x: 4.5, y: 3 };
 
         this.$element.addEventListener("pointermove", this.interact.bind(this));
-        this.$element.addEventListener("deviceorientation", this.orientate.bind(this));
+        window.addEventListener("deviceorientation", this.orientate.bind(this));
     }
 
     interact(e) {
