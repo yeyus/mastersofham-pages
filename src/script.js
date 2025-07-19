@@ -10,6 +10,8 @@ const adjust = (value, fromMin, fromMax, toMin, toMax) => {
 	return round(toMin + (toMax - toMin) * (value - fromMin) / (fromMax - fromMin));
 };
 
+const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
 class RotationTracker {
     constructor(elementRef) {
         this.$element = elementRef;
@@ -99,9 +101,134 @@ class RotationTracker {
     }
 }
 
+const STAR_MAX_RADIUS = 6;
+
+class Star {
+    constructor(center, canvasWidth, canvasHeight) {
+        this.center = center;
+        this.canvasWidth = canvasWidth;
+        this.canvasHeight = canvasHeight;
+        this.x = getRandomInt(-this.center.x, this.center.x);
+        this.y = getRandomInt(-this.center.y, this.center.y);
+        this.counter = getRandomInt(1, this.canvasWidth);
+
+        this.radiusMax = 1 + Math.random() * STAR_MAX_RADIUS;
+        this.speed = getRandomInt(1, 5);
+    }
+
+    drawStar(context) {
+        this.counter -= this.speed;
+
+        if (this.counter < 1) {
+            this.counter = this.canvasWidth;
+            this.x = getRandomInt(-this.center.x, this.center.x);
+            this.y = getRandomInt(-this.center.y, this.center.y);
+
+            this.radiusMax = getRandomInt(1, STAR_MAX_RADIUS);
+            this.speed = getRandomInt(1, 5);
+        }
+
+        let xRatio = this.x / this.counter;
+        let yRatio = this.y / this.counter;
+
+        let starX = adjust(xRatio, 0, 1, 0, this.canvasWidth);
+        let starY = adjust(yRatio, 0, 1, 0, this.canvasHeight);
+
+        this.radius = adjust(this.counter, 0, this.canvasWidth, this.radiusMax, 0);
+
+        context.beginPath();
+
+        context.arc(starX, starY, this.radius, 0, Math.PI * 2, false);
+        context.closePath();
+
+        context.fillStyle = "#FFF";
+        context.fill();
+    }
+}
+
+class StarField {
+    constructor(container, canvasRef, numStars = 500) {
+        this.$canvas = canvasRef;
+        this.$context = this.$canvas.getContext('2d');
+        this.numStars = numStars;
+        this.currentTime = 0;
+        this.deltaTime = 0;
+        this.previousTime = 0;
+        this.fps = 60;
+        this.interval = Math.floor(1000 / this.fps);
+        this.drawing = false;
+
+        this.stars = [];
+
+        const rect = this.$canvas.getBoundingClientRect()
+        this._width = rect.width;
+        this._height = rect.height;
+        this._center = { x: rect.width * 0.5, y: rect.height * 0.5 };
+
+        this.$canvas.width = this._width;
+        this.$canvas.height = this._height;
+
+        for (let i = 0; i < this.numStars; i++) {
+            let star = new Star(this._center, this._width, this._height);
+            this.stars.push(star);
+        }
+
+        container.addEventListener("resize", () => {
+            this._width = window.innerWidth;
+            this._height = window.innerHeight;
+            this._center = { x: this._width * 0.5, y: this._height * 0.5 };
+
+            this.$canvas.width = this._width;
+            this.$canvas.height = this._height;
+
+            this.stars = [];
+            for (let i = 0; i < this.numStars; i++) {
+                let star = new Star(this._center, this._width, this._height);
+                this.stars.push(star);
+            }
+        });
+    }
+
+    draw(timestamp) {
+        if (!this.drawing) return;
+        console.log("frame");
+
+        this.currentTime = timestamp;
+        this.deltaTime = this.currentTime - this.previousTime;
+
+        if (this.deltaTime > this.interval) {
+            this.previousTime = this.currentTime - (this.deltaTime % this.interval);
+
+            this.$context.clearRect(0, 0, this._width, this._height);
+            this.$context.fillStyle = "#111";
+            this.$context.fillRect(0, 0, this._width, this._height);
+
+            this.$context.translate(this._center.x, this._center.y);
+
+            for (let i = 0; i < this.stars.length; i++) {
+                let star = this.stars[i];
+                star.drawStar(this.$context);
+            }
+
+            this.$context.translate(-this._center.x, -this._center.y);
+        }
+
+        requestAnimationFrame(this.draw.bind(this));
+    }
+
+    start() {
+        this.previousTime = performance.now();
+        this.drawing = true;
+        this.draw();
+    }
+}
+
+let starfield;
+let rotationTracker;
+
 document.addEventListener("DOMContentLoaded", function() {
     console.log("DOM is ready");
-
-    const rotationTracker = new RotationTracker(document.getElementById("logo"));
-
+    rotationTracker = new RotationTracker(document.getElementById("logo"));
+    starfield = new StarField(window, document.getElementById("starfield"), 250);
+    starfield.start();
 });
