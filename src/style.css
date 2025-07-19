@@ -9,17 +9,19 @@ body {
     -webkit-user-select: none; /* Safari */
     -ms-user-select: none; /* IE 10 and IE 11 */
     user-select: none; /* Standard syntax */
-}
+    margin: 0;
+    padding: 0;
 
 .logo {
-    position: relative;
+    position: absolute;
+    top: 50%;
+    left: 50%;
     width: 50%;
-    margin-left: auto;
-    margin-right: auto;
+    transform: translate(-50%, -50%);
 }
 
 .card {
-    transform: translate3d(0px, 0px, 0.01px);
+    /* transform: translate3d(0px, 0px, 0.01px); */
     pointer-events: none;
     z-index: calc(var(--card-scale) * 2);
     will-change: transform, visibility, z-index;

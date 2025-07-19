@@ -13,6 +13,7 @@ const adjust = (value, fromMin, fromMax, toMin, toMax) => {
 class RotationTracker {
     constructor(elementRef) {
         this.$element = elementRef;
+        this._rotateFactor = { x: 4.5, y: 3 };
 
         this.$element.addEventListener("pointermove", this.interact.bind(this));
         this.$element.addEventListener("deviceorientation", this.orientate.bind(this));
@@ -44,8 +45,8 @@ class RotationTracker {
             x: adjust(percent.x, 0, 100, 37, 63),
             y: adjust(percent.y, 0, 100, 33, 67),
         },{
-            x: round(-(center.x / 3.5)),
-            y: round(center.y / 2),
+            x: round(-(center.x / this._rotateFactor.x)),
+            y: round(center.y / this._rotateFactor.y),
         },{
             x: round(percent.x),
             y: round(percent.y),
