@@ -1,0 +1,122 @@
+:root {
+    --background: #000000;
+    --text-color: #fff;
+}
+
+body {
+    background: var(--background);
+    color: var(--text-color);
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
+
+.logo {
+    position: relative;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.card {
+    transform: translate3d(0px, 0px, 0.01px);
+    pointer-events: none;
+    z-index: calc(var(--card-scale) * 2);
+    will-change: transform, visibility, z-index;
+    transform-style: preserve-3d;
+
+    --foil-brightness: 0.55;
+    --card-glow: hsl(9, 81%, 59%);
+    --card-aspect: 1;
+    --card-opacity: 1;
+}
+
+.card, .card * {
+    outline: transparent solid 1px;
+}
+
+.front {
+    opacity: 1;
+    transform: translate3d(0px, 0px, 0.01px);
+    transition: opacity 0.33s ease-out;
+}
+
+.front img {
+    position: relative;
+    width: 100%;
+    object-fit: contain;
+    outline: transparent solid 1px;
+}
+
+.rotator {
+    display: grid;
+    perspective: 600px;
+    will-change: transform, box-shadow;
+    transform-origin: center center;
+    transform-style: preserve-3d;
+
+    appearance: none;
+    border-width: initial;
+    border-style: none;
+    border-color: initial;
+    border-image: initial;
+    background: transparent;
+    padding: 0px;
+
+    box-shadow: transparent 0px 0px 3px -1px, transparent 0px 0px 2px 1px, transparent 0px 0px 5px 0px, black 0px 10px 20px -5px, black 0px 2px 15px -5px, transparent 0px 0px 20px 0px;
+    transition: box-shadow 0.4s, opacity 0.33s ease-out;
+
+    transform: rotateY(var(--rotate-x)) rotateX(var(--rotate-y));
+    pointer-events: auto;
+
+    aspect-ratio: var(--card-aspect);
+    border-radius: var(--card-radius);
+
+    /* Use the logo image as a mask */
+    mask-image: url('logo.webp');
+    mask-mode: alpha;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+    mask-position: center;
+
+    -webkit-mask-image: url('logo.webp');
+    -webkit-mask-mode: alpha;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    -webkit-mask-position: center;
+}
+
+.rotator * {
+    width: 100%;
+    display: grid;
+    aspect-ratio: var(--card-aspect);
+    transform-style: preserve-3d;
+    pointer-events: none;
+    grid-area: 1 / 1;
+    border-radius: var(--card-radius);
+    overflow: hidden;
+}
+
+.shine, .glare {
+    will-change: transform, opacity, background-image, background-size, background-position, background-blend-mode, filter;
+}
+
+.shine {
+    display: grid;
+    transform: translateZ(1px);
+    z-index: 3;
+    filter: brightness(0.85) contrast(2.75) saturate(0.65);
+    mix-blend-mode: color-dodge;
+    opacity: var(--card-opacity);
+    overflow: hidden;
+    background: center center / cover transparent;
+    background-position: center center;
+}
+
+.glare {
+    transform: translateZ(1.41px);
+    background-image: radial-gradient(farthest-corner circle at var(--pointer-x) var(--pointer-y), hsla(0, 0%, 100%, 0.8) 10%, hsla(0, 0%, 100%, 0.65) 20%, hsla(0, 0%, 0%, 0.5) 90%);
+    opacity: var(--card-opacity);
+    mix-blend-mode: overlay;
+    overflow: hidden;
+}
