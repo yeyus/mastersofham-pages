@@ -1,5 +1,12 @@
 "use strict";
 
+/* 
+Based on the original starfield effects by KIRUPA 
+https://www.kirupa.com/animations/animated_3d_starfield_effect.htm
+Based on the original Pokemon Card effects by simeydotme
+https://github.com/simeydotme/pokemon-cards-css
+*/
+
 const round = (value, precision = 3) => parseFloat(value.toFixed(precision));
 
 const clamp = (value, min = 0, max = 100 ) => {
